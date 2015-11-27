@@ -1,0 +1,10 @@
+{
+	"storage": {
+		"strategy" : "local",
+		
+		"local" : {
+			"directory" : "data/uploads"
+		}
+	}
+	
+}
