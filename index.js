@@ -74,7 +74,7 @@ Server.prototype.loadRestEndpoints = function () {
     // load the dynamic routes from the routes folder
     // require the module and pass the  
     // express instance 
-    require('express-load-routes')(app, './rest');
+    require('express-load-routes')(app, './routes');
 }
 
 Server.prototype.bootstrap = function () {
