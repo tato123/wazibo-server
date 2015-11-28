@@ -4,7 +4,8 @@
 var express = require('express'),
     app = express(),
     server = require('http').Server(app),
-    compression = require('compression');
+    compression = require('compression'),
+    util = require('util');
 
 // express middleware
 var bodyParser = require('body-parser');
@@ -40,8 +41,14 @@ function shouldCompress(req, res) {
 }
 
 Server.prototype.connectMongodb = function () {
+    console.log(process.env);
+    var host = process.env.MONGO_PORT_27017_TCP_ADDR || 'localhost';
+	var port = process.env.MONGO_PORT_27017_TCP_PORT || '21017';
+    var url = util.format('mongodb://%s:%s/mydatabase', host, port);
+    
+    
     // Connect to Mongo on start
-    db.connect('mongodb://localhost:27017/mydatabase', function (err) {
+    db.connect(url, function (err) {
         if (err) {
             console.log('Unable to connect to Mongo.')
             process.exit(1)
