@@ -7,7 +7,6 @@ var express = require('express'),
     compression = require('compression'),
     passport = require('passport'),
     session = require('express-session'),
-    exphbs  = require('express-handlebars'),
     util = require('util');
 
 // express middleware
@@ -53,14 +52,6 @@ Server.prototype.connectMongodb = function () {
     mongoose.connect(url);
 };
 
-Server.prototype.exportConfig = function () {
-    var env = process.env.NODE_ENV || 'development';
-    this.config = require('./config/' + env + '.json');
-    module.exports = {
-        config: this.config
-    };
-};
-
 /**
  * @name loadPassportStrategies
  * @description
@@ -68,7 +59,7 @@ Server.prototype.exportConfig = function () {
  * or support as part of this service
  */
 Server.prototype.loadPassportStrategies = function () {
-    require('./authenticate/fb');
+    require('./authenticate/facebook');
     
     passport.serializeUser(function (user, done) {
         done(null, user._id);
@@ -85,9 +76,7 @@ Server.prototype.loadPassportStrategies = function () {
  * @description
  * Load all of our 
  */
-Server.prototype.loadMiddleware = function () {
-    app.engine('handlebars', exphbs({}));
-    app.set('view engine', 'handlebars');
+Server.prototype.loadMiddleware = function () {    
     app.use(bodyParser.json());    
     app.use(compression({ filter: shouldCompress }));
 
@@ -110,7 +99,6 @@ Server.prototype.loadRestEndpoints = function () {
 
 Server.prototype.bootstrap = function () {
     var self = this;
-    this.exportConfig();
     this.loadMiddleware();
     this.loadPassportStrategies();
     this.loadRestEndpoints();

@@ -3,7 +3,7 @@
 var express = require('express'),
     router = express.Router(),
     path = require('path'),
-    config = require('../../').config,
+    config = require('../../config').config,
     multer = require('multer');
 
 

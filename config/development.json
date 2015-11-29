@@ -1,4 +1,5 @@
 {
+	"port" : 9080,
 	"storage": {
 		"strategy" : "local",
 		

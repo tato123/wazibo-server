@@ -4,7 +4,7 @@ var passport = require('passport'),
   FacebookStrategy = require('passport-facebook').Strategy,
   User = require('../model/User'),
   _ = require('lodash'),
-  facebook_config = require('../').config.authentication.facebook;
+  facebook_config = require('../config').config.authentication.facebook;
 
 console.log('[passport strategy] Adding facebook passport strategy');
 
