@@ -3,7 +3,7 @@
 		"strategy" : "local",
 		
 		"local" : {
-			"directory" : "data/uploads"
+			"directory" : ".media-uploads"
 		}
 	},
 	
@@ -12,7 +12,8 @@
 			"id" : "477540052449717",
 			"secret" : "ef4127fdfeac03a04f6931712232437c",
 			"callbackUrl" : "http://localhost:9080/1.0/auth/facebook/callback",
-			"enableProof" : false
+			"enableProof" : false,
+			"acl" : []
 		}
 	}
 	

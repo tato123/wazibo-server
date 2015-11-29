@@ -3,13 +3,8 @@
 var express = require('express'),
     router = express.Router(),
     path = require('path'),
-    multer = require('multer');
-
-var db = require('../../data/client'),
     config = require('../../').config,
-    assert = require('assert');
-
-var COLLECTION_NAME = 'media';
+    multer = require('multer');
 
 
 // conditionally add a route to handle uploading to our local
