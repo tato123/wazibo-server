@@ -1,13 +1,17 @@
 {
 	"port" : 9080,
 	"storage": {
-		"strategy" : "local",
+		"strategy" : "gcloud",
 		
 		"local" : {
 			"directory" : ".media-uploads"
+		},
+		
+		"gcloud" : {			
+			"projectId" : "wazibo-1143",							
+			"cloudStorageBucket" : "wazibo-public-media"
 		}
-	},
-	
+	},	
 	"authentication" : {
 		"facebook" : {
 			"id" : "477540052449717",
@@ -15,7 +19,7 @@
 			"callbackUrl" : "http://localhost:9080/1.0/auth/facebook/callback",
 			"enableProof" : false,
 			"acl" : []
-		}
+		}		
 	}
 	
 }

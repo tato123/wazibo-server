@@ -1,10 +1,12 @@
 'use strict';
 
-var gcloud = require('gcloud');
-
-module.exports = function (gcloudConfig, cloudStorageBucket) {
-	var storage = gcloud.storage(gcloudConfig);
-	var bucket = storage.bucket(cloudStorageBucket);
+module.exports = function (projectId, cloudStorageBucket) {
+	
+	var gcloud = require('gcloud')({
+		projectId: projectId
+	});
+	var gcs = gcloud.storage();
+	var bucket = gcs.bucket(cloudStorageBucket);
 
 
 	// Returns the public, anonymously accessable URL to a given Cloud Storage
@@ -29,8 +31,9 @@ module.exports = function (gcloudConfig, cloudStorageBucket) {
 
 		var gcsname = Date.now() + req.file.originalname;
 		var file = bucket.file(gcsname);
+		
 		var stream = file.createWriteStream();
-
+		
 		stream.on('error', function (err) {
 			req.file.cloudStorageError = err;
 			next(err);
@@ -43,6 +46,9 @@ module.exports = function (gcloudConfig, cloudStorageBucket) {
 		});
 
 		stream.end(req.file.buffer);
+	
+
+		
 	}
 	// [END process]
 

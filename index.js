@@ -7,17 +7,12 @@ var express = require('express'),
     compression = require('compression'),
     passport = require('passport'),
     session = require('express-session'),
+    x_no_compress = require('./middleware/x-no-compress'),
+    config = require('./config').config,
     util = require('util');
 
 // express middleware
 var bodyParser = require('body-parser');
-
-// file system libraries
-var path = require('path'),
-    fs = require('fs');
-
-// utilitiy libraries
-var _ = require('lodash');
 
 // database client
 var mongoose = require('mongoose'),
@@ -25,26 +20,35 @@ var mongoose = require('mongoose'),
 
 
 
+
 /**
- * @class  
- * @description 
- * Our server object
- */
-function Server() {
-    this.PORT = 9080;
+ * @name bootstrap
+ * @description
+ * Bootstrapping function, responsible for starting up the server
+ * and loading each of the required pieces. Split into functions
+ * to better articulate what each step should do and isolate steps
+ */ 
+function bootstrap() {
+
+    loadMiddleware();
+    loadPassportStrategies();
+    loadRestEndpoints();
+    connectMongodb();
+
+    console.log('Bootstrapping environment...');
+    server.listen(config.port, function () {
+        var host = '0.0.0.0';
+        var port = config.port;
+        console.log('Listening at http://%s:%s', host, port);
+    });
 }
 
-function shouldCompress(req, res) {
-    if (req.headers['x-no-compression']) {
-        // don't compress responses with this request header
-        return false
-    }
-
-    // fallback to standard filter function
-    return compression.filter(req, res)
-};
-
-Server.prototype.connectMongodb = function () {
+/**
+ * @name connectMongodb
+ * @description
+ * Handles connecting to our mongodb source 
+ */ 
+function connectMongodb() {
     var host = process.env.MONGO_PORT_27017_TCP_ADDR || 'localhost';
     var port = process.env.MONGO_PORT_27017_TCP_PORT || '27017';
     var url = util.format('mongodb://%s:%s/mydatabase', host, port);
@@ -56,9 +60,11 @@ Server.prototype.connectMongodb = function () {
  * @name loadPassportStrategies
  * @description
  * Load each of our passport strategies that we would like to include
- * or support as part of this service
+ * or support as part of this service. In addition we are handling
+ * serialization / deserialziation of user object here since our strategies
+ * should all conform to this dataset.
  */
-Server.prototype.loadPassportStrategies = function () {
+ function loadPassportStrategies() {
     require('./authenticate/facebook');
     
     passport.serializeUser(function (user, done) {
@@ -73,12 +79,16 @@ Server.prototype.loadPassportStrategies = function () {
 }
 
 /**
+ * @name loadMiddlware
  * @description
- * Load all of our 
+ * Load all of our specified middlware that is required
+ * for this application. This doesn't preclude dynamically adding 
+ * more middleware, just the initial set of middleware required to
+ * get running.
  */
-Server.prototype.loadMiddleware = function () {    
+function loadMiddleware() {    
     app.use(bodyParser.json());    
-    app.use(compression({ filter: shouldCompress }));
+    app.use(compression({ filter: x_no_compress }));
 
     app.use(session({
         secret: 'test session',
@@ -90,28 +100,13 @@ Server.prototype.loadMiddleware = function () {
     
 }
 
-Server.prototype.loadRestEndpoints = function () {
+function loadRestEndpoints() {
     // load the dynamic routes from the routes folder
     // require the module and pass the  
     // express instance 
     require('express-load-routes')(app, './routes');
 }
 
-Server.prototype.bootstrap = function () {
-    var self = this;
-    this.loadMiddleware();
-    this.loadPassportStrategies();
-    this.loadRestEndpoints();
-    this.connectMongodb();
-
-    console.log('Bootstrapping environment...');
-    server.listen(this.PORT, function () {
-        var host = '0.0.0.0';
-        var port = self.PORT;
-        console.log('Listening at http://%s:%s', host, port);
-    });
-}
-
 if (!module.parent) {
-    (new Server()).bootstrap();
+    bootstrap();
 }
