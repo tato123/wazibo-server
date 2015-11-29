@@ -38,14 +38,13 @@ function shouldCompress(req, res) {
 
     // fallback to standard filter function
     return compression.filter(req, res)
-}
+};
 
 Server.prototype.connectMongodb = function () {
-    console.log(process.env);
     var host = process.env.MONGO_PORT_27017_TCP_ADDR || 'localhost';
-	var port = process.env.MONGO_PORT_27017_TCP_PORT || '21017';
+	var port = process.env.MONGO_PORT_27017_TCP_PORT || '27017';
     var url = util.format('mongodb://%s:%s/mydatabase', host, port);
-    
+    console.log('[Connect mongodb] connecting to url %s', url);
     
     // Connect to Mongo on start
     db.connect(url, function (err) {
@@ -58,7 +57,7 @@ Server.prototype.connectMongodb = function () {
             })
         }
     });
-}
+};
 
 Server.prototype.exportConfig = function() {
     var env = process.env.NODE_ENV || 'development';
@@ -66,6 +65,16 @@ Server.prototype.exportConfig = function() {
     module.exports = {
         config: this.config
     };
+};
+
+/**
+ * @name loadPassportStrategies
+ * @description
+ * Load each of our passport strategies that we would like to include
+ * or support as part of this service
+ */ 
+Server.prototype.loadPassportStrategies = function() {
+    require('./authenticate/fb');
 }
 
 /**
@@ -88,10 +97,10 @@ Server.prototype.bootstrap = function () {
     var self = this;
     this.exportConfig();
     this.loadMiddleware();
+    this.loadPassportStrategies();
     this.loadRestEndpoints();
     this.connectMongodb();
     
-
     console.log('Bootstrapping environment...');
     server.listen(this.PORT, function () {
         var host = '0.0.0.0';

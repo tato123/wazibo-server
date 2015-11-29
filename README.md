@@ -50,9 +50,41 @@ docker-machine env default
 
 The ip address will be visible under the field "DOCKER_HOST"
 
+## Deploying to production
+
+Wazibo server currently uses google cloud engine, to deploy you must install the following
+
+	- docker
+	- gcloud (google cloud management shell)
+	- kubectl (kubernetes management, installed via gcloud shell)
+
+More details on how to get started and in general how google container engine works are available here 
+https://cloud.google.com/container-engine/docs/tutorials/hello-node
+	
+### Preparing for deployment
+
+Prepare the docker container by building the content
+
+```
+docker build -t gcr.io/${PROJECT_ID}/hello-node .
+```
+
+Tag the project with the Google container registry, this is a staging area for docker images. This applies a piece of metadata containing 
+image name, version (or default to latest), and the registry it will be deployed to
+
+```
+docker tag wazibo/server us.gcr.io/wazibo-1143/wazibo-server
+```
+
+Next, push the image to the Google container registry 
+```
+gcloud docker push us.gcr.io/wazibo-1143/wazibo-server
+```
 
 # Architecture
 
+This section contains the HLD of how the current version is implemented (each version branch should contain an updated README based on current 
+project implmeentation).
 
 ## Data Storage model
 
