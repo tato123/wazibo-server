@@ -5,23 +5,48 @@ var express = require('express'),
     
 router.route('/')
     /**
-    * @description
-    * Allows users to publish a new oppurtunity 
+    * @api {post} /sale_event New Event
+    * @apiName Post a new event
+    * @apiGroup Sale Event
+    *
+    * @apiSuccess {SaleMedia} Sale media object containing a record of an upload
     */
     .post(function (req, res) {
         res.status(500).send({message:'not implemented yet'});  
     })
-    // get all events
+    
+    /**
+    * @api {get} /sale_event Get all events
+    * @apiName Get all events
+    * @apiGroup Sale Event
+    *
+    * @apiSuccess {SaleMedia} Sale media object containing a record of an upload
+    */
     .get(function (req, res) {
         res.status(500).send({message:'not implemented yet'});
     });
     
+    
 router.route('/:id')
-    // update an event
+    
+    /**
+    * @api {post} /sale_event/:id Update event
+    * @apiName Update an event
+    * @apiGroup Sale Event
+    *
+    * @apiSuccess {SaleMedia} Sale media object containing a record of an upload
+    */
     .post(function(req, res) {
         res.status(500).send({message:'not implemented yet'});        
     })
-    // get an event by its id
+    
+    /**
+    * @api {get} /sale_event/:id Get event by id
+    * @apiName Get event by id
+    * @apiGroup Sale Event
+    *
+    * @apiSuccess {SaleMedia} Sale media object containing a record of an upload
+    */
     .get(function(req, res) {
         res.status(500).send({message:'not implemented yet'}); 
     });

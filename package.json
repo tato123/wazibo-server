@@ -6,7 +6,12 @@
   "scripts": {
     "lint": "./node_modules/.bin/jshint --exclude-path=.gitignore . || true",
     "test": "npm run lint",
-    "start": "node ${SCRIPT:-index.js}"
+    "start": "npm run apidoc && node ${SCRIPT:-index.js}",
+    "db": "mongod --dbpath .mongodb",
+    "docker-build": "docker build -t gcr.io/wazibo-1143/wazibo-server .",
+    "docker-deploy": "gcloud docker push gcr.io/wazibo-1143/wazibo-server",
+    "gcloud-deploy": "npm run docker-build && npm run docker-deploy",
+    "apidoc" : "./node_modules/apidoc/bin/apidoc -i routes/ -o public/api/"
   },
   "repository": {
     "type": "git",
@@ -41,6 +46,7 @@
     "npm": ">1.4.0"
   },
   "devDependencies": {
+    "apidoc": "^0.13.1",
     "jshint": "^2.9.1-rc1"
   }
 }

@@ -7,6 +7,19 @@ var express = require('express'),
     SaleMedia = require('../../model/SaleMedia'),
     multer = require('multer');
 
+ /**
+ * @api {post} /media/upload Upload Image
+ * @apiName Upload Image
+ * @apiGroup Media
+ */
+
+ /**
+ * @api {get} /media/:id Get Image
+ * @apiName View media record
+ * @apiGroup Media
+ *
+ * @apiSuccess {SaleMedia} Sale media object containing a record of an upload
+ */
 
 // conditionally add a route to handle uploading to our local
 // file storage
@@ -18,10 +31,6 @@ if (config.storage.strategy === 'local') {
     router.post('/upload', multer({ dest: destination }).any(), function (req, res) {
         // do I need to do something here?
         res.status(200).send('response here');
-    });
-
-    router.get('/bucket', function (req, res) {
-        res.status(400).send('unsupported for media storage, use /media/upload instead');
     });
 
     router.get('/:mediaId', function (req, res) {
@@ -36,6 +45,7 @@ if (config.storage.strategy === 'gcloud') {
 
     var images = require('../../middleware/images')(config.storage.gcloud, config.storage.gcloud.cloudStorageBucket);
 
+   
     router.post('/upload', images.multer.single('image'), images.sendUploadToGCS,
         function(req, res) {
             var data = req.body;
@@ -55,10 +65,6 @@ if (config.storage.strategy === 'gcloud') {
                 res.status(200).send({message:'saved succesfully', response: savedData});                
             });
         });
-
-    router.get('/bucket', function (req, res) {
-        res.status(400).send('unsupported for media storage, use /media/upload instead');
-    });
 
     router.get('/', function(req, res) {
         SaleMedia.find(function(err, results) {
