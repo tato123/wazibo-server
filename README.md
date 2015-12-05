@@ -52,6 +52,16 @@ The ip address will be visible under the field "DOCKER_HOST"
 
 ## Publishing to Google Cloud production servers
 
+### Creating a container cluster
+
+### Creating persistent storage for mongodb
+
+```
+gcloud compute disks create --size=200GB mongo-disk
+```
+
+### Docker deployment
+
 Wazibo server currently uses google cloud engine, to deploy you must install the following
 
 	- docker
@@ -70,6 +80,8 @@ npm run gcloud-deploy
 This will automatically take care of building a new version and deploying to Google container engine
 
 
+
+
 # Architecture
 
 This section contains the HLD of how the current version is implemented (each version branch should contain an updated README based on current 
@@ -79,11 +91,17 @@ project implmeentation).
 
 ### Authentication
 
-Users can authenticate through facebook by using the following API methods
+Authentication is required to access the various apis. Users can authenticate through facebook by using the following API methods:
+
+* 
 
 
 
 ## Data Storage model
+
+
+### Version 1.0
+This is still a work in progress!
 
 ```
 {

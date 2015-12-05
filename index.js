@@ -9,7 +9,8 @@ var express = require('express'),
     session = require('express-session'),
     x_no_compress = require('./middleware/x-no-compress'),
     config = require('./config').config,
-    util = require('util');
+    util = require('util'),
+    waziboHost = process.env.WAZIBO_URL || util.format('http://localhost:%s', config.port);
 
 // express middleware
 var bodyParser = require('body-parser');
@@ -18,28 +19,28 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose'),
     User = require('./model/User');
 
-
-
-
 /**
  * @name bootstrap
  * @description
  * Bootstrapping function, responsible for starting up the server
  * and loading each of the required pieces. Split into functions
  * to better articulate what each step should do and isolate steps
- */ 
+ */
 function bootstrap() {
+    console.log('--------------------------------------------');
+    console.log('[Wazibo Server] Starting with environment...');
+    console.log(process.env);
+    console.log('--------------------------------------------');
 
     loadMiddleware();
     loadPassportStrategies();
     loadRestEndpoints();
     connectMongodb();
+    
 
-    console.log('Bootstrapping environment...');
-    server.listen(config.port, function () {
-        var host = '0.0.0.0';
-        var port = config.port;
-        console.log('Listening at http://%s:%s', host, port);
+    console.log('[Wazibo Server] Bootstrapping environment...');
+    server.listen(config.port, function () {        
+        console.log('[Wazibo Server] Server available at %s', waziboHost);        
     });
 }
 
@@ -47,7 +48,7 @@ function bootstrap() {
  * @name connectMongodb
  * @description
  * Handles connecting to our mongodb source 
- */ 
+ */
 function connectMongodb() {
     var host = process.env.MONGO_PORT_27017_TCP_ADDR || 'localhost';
     var port = process.env.MONGO_PORT_27017_TCP_PORT || '27017';
@@ -64,9 +65,10 @@ function connectMongodb() {
  * serialization / deserialziation of user object here since our strategies
  * should all conform to this dataset.
  */
- function loadPassportStrategies() {
-    require('./authenticate/facebook');
+function loadPassportStrategies() {
     
+    require('./authenticate/facebook')(config, waziboHost);
+
     passport.serializeUser(function (user, done) {
         done(null, user._id);
     });
@@ -86,8 +88,8 @@ function connectMongodb() {
  * more middleware, just the initial set of middleware required to
  * get running.
  */
-function loadMiddleware() {    
-    app.use(bodyParser.json());    
+function loadMiddleware() {
+    app.use(bodyParser.json());
     app.use(compression({ filter: x_no_compress }));
 
     app.use(session({
@@ -97,7 +99,7 @@ function loadMiddleware() {
     }));
     app.use(passport.initialize());
     app.use(passport.session());
-    app.use(express.static('public/api'));
+    app.use(express.static(__dirname +'/public/api'));
 }
 
 function loadRestEndpoints() {
