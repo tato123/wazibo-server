@@ -25,7 +25,7 @@ router.get('/login', function(req, res) {
 // facebook based authentication
 // -------------------------------------------------
 /**
- * @api {get} /auth/facebook Authenticate
+ * @api {get} /auth/facebook Facebook authenticate
  * @apiName Login with facebook
  * @apiGroup Authentication
  *

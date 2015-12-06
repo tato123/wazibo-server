@@ -7,13 +7,13 @@ var express = require('express'),
     _ = require('lodash');
 
 router.route('/')
-/**
-* @api {post} /sale_event New Event
-* @apiName Post a new event
-* @apiGroup Sale Event
-*
-* @apiSuccess {SaleMedia} Sale media object containing a record of an upload
-*/
+    /**
+    * @api {post} /sale_event New Event
+    * @apiName Post a new event
+    * @apiGroup Sale Event
+    *
+    * @apiSuccess {SaleMedia} Sale media object containing a record of an upload
+    */
     .post(isAuthenticated, function (req, res) {
         var sale = new SaleEvent(req.body);
         sale.save(function (err) {
@@ -21,17 +21,16 @@ router.route('/')
                 res.status(400).send({ error: err });
             }
             res.status(200).send({ results: sale });
-        })
-
+        });
     })
     
-/**
-* @api {get} /sale_event Get all events
-* @apiName Get all events
-* @apiGroup Sale Event
-*
-* @apiSuccess {SaleMedia} Sale media object containing a record of an upload
-*/
+    /**
+    * @api {get} /sale_event Get all events
+    * @apiName Get all events
+    * @apiGroup Sale Event
+    *
+    * @apiSuccess {SaleMedia} Sale media object containing a record of an upload
+    */
     .get(isAuthenticated, function (req, res) {
         SaleEvent.find({}, function (err, events) {
             if (err) {
@@ -44,13 +43,13 @@ router.route('/')
 
 router.route('/:id')
     
-/**
-* @api {post} /sale_event/:id Update event
-* @apiName Update an event
-* @apiGroup Sale Event
-*
-* @apiSuccess {SaleMedia} Sale media object containing a record of an upload
-*/
+    /**
+    * @api {post} /sale_event/:id Update event
+    * @apiName Update an event
+    * @apiGroup Sale Event
+    *
+    * @apiSuccess {SaleMedia} Sale media object containing a record of an upload
+    */
     .post(isAuthenticated, function (req, res) {
         SaleEvent.findById(req.param.id, function (err, saleEvent) {
             if (err) {
@@ -67,15 +66,14 @@ router.route('/:id')
 
     })
     
-/**
-* @api {get} /sale_event/:id Get event by id
-* @apiName Get event by id
-* @apiGroup Sale Event
-*
-* @apiSuccess {SaleMedia} Sale media object containing a record of an upload
-*/
+    /**
+    * @api {get} /sale_event/:id Get event by id
+    * @apiName Get event by id
+    * @apiGroup Sale Event
+    *
+    * @apiSuccess {SaleMedia} Sale media object containing a record of an upload
+    */
     .get(isAuthenticated, function (req, res) {
-
         SaleEvent.findById(req.param.id, function (err, saleEvent) {
             if (err) {
                 res.status(400).send({ error: err });

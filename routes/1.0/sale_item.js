@@ -1,7 +1,10 @@
 'use strict';
 
 var express = require('express'),
-    router = express.Router();
+    router = express.Router(),
+    SaleItem = require('../../model/SaleItem'),
+    isAuthenticated = require('../../middleware/isAuthenticated'),
+    _ = require('lodash');
  
 
 router.route('/')
@@ -13,8 +16,14 @@ router.route('/')
     *
     * @apiSuccess {SaleItem} Sale media object containing a record of an upload
     */
-    .post(function (req, res) {
-       res.status(500).send({message:'not implemented yet'});
+    .post(isAuthenticated, function (req, res) {
+       var sale = new SaleItem(req.body);
+       sale.save(function (err) {
+            if (err) {
+                res.status(400).send({ error: err });
+            }
+            res.status(200).send({ results: sale });
+        });
     })
     
     /**
@@ -24,8 +33,13 @@ router.route('/')
     *
     * @apiSuccess {SaleItem} Sale media object containing a record of an upload
     */
-    .get(function (req, res) {
-        res.status(500).send({message:'not implemented yet'});
+    .get(isAuthenticated, function (req, res) {
+        SaleItem.find({}, function (err, saleItems) {
+            if (err) {
+                res.status(400).send({ error: err });
+            }
+            res.status(200).send({ results: saleItems });
+        });
     });
     
 router.route('/:id')
@@ -36,8 +50,19 @@ router.route('/:id')
     *
     * @apiSuccess {SaleItem} Sale media object containing a record of an upload
     */
-    .post(function(req, res) {
-        res.status(500).send({message:'not implemented yet'});
+    .post(isAuthenticated, function(req, res) {
+        SaleItem.findById(req.param.id, function (err, saleItem) {
+            if (err) {
+                res.status(400).send({ error: err });
+            }
+            _.extend(saleItem, req.body);
+            saleItem.save(function (err) {
+                if (err) {
+                    res.status(400).send({ error: err });
+                }
+                res.status(200).send({ results: saleItem });
+            });
+        });
     })
     /**
     * @api {get} /sale_item/:id Get item by id
@@ -46,8 +71,13 @@ router.route('/:id')
     *
     * @apiSuccess {SaleItem} Sale media object containing a record of an upload
     */
-    .get(function(req, res) {
-        res.status(500).send({message:'not implemented yet'});
+    .get(isAuthenticated, function(req, res) {
+        SaleItem.findById(req.param.id, function (err, saleItem) {
+            if (err) {
+                res.status(400).send({ error: err });
+            }
+            res.status(200).send({ results: saleItem });
+        });
     });
 
 module.exports = router;

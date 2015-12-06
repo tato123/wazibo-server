@@ -5,7 +5,8 @@ var express = require('express'),
     path = require('path'),
     config = require('../../config').config,
     SaleMedia = require('../../model/SaleMedia'),
-    multer = require('multer');
+    multer = require('multer'),
+    isAuthenticated = require('../../middleware/isAuthenticated');
 
  /**
  * @api {post} /media/upload Upload Image
@@ -46,7 +47,7 @@ if (config.storage.strategy === 'gcloud') {
     var images = require('../../middleware/images')(config.storage.gcloud, config.storage.gcloud.cloudStorageBucket);
 
    
-    router.post('/upload', images.multer.single('image'), images.sendUploadToGCS,
+    router.post('/upload', isAuthenticated, images.multer.single('image'), images.sendUploadToGCS,
         function(req, res) {
             var data = req.body;
     
@@ -66,7 +67,7 @@ if (config.storage.strategy === 'gcloud') {
             });
         });
 
-    router.get('/', function(req, res) {
+    router.get('/', isAuthenticated, function(req, res) {
         SaleMedia.find(function(err, results) {
             if (err) {
                 res.status(404).send({message:'error cocured', response: [], error: err});
@@ -76,8 +77,13 @@ if (config.storage.strategy === 'gcloud') {
         });  
     });
     
-    router.get('/:mediaId', function (req, res) {
-        res.status(500).send('not yet implemented');
+    router.get('/:mediaId', isAuthenticated, function (req, res) {
+        SaleMedia.findById(req.param.id, function (err, saleMedia) {
+            if (err) {
+                res.status(400).send({ error: err });
+            }
+            res.status(200).send({ results: saleMedia });
+        });
     });
 }
 

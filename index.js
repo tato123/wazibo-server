@@ -10,7 +10,7 @@ var express = require('express'),
     x_no_compress = require('./middleware/x-no-compress'),
     config = require('./config').config,
     util = require('util'),
-    waziboHost = process.env.WAZIBO_URL || util.format('http://localhost:%s', config.port);
+    waziboHost = process.env.WAZIBO_URL || util.format('http://local.wazibo.com:%s', config.port);
 
 // express middleware
 var bodyParser = require('body-parser');
@@ -33,6 +33,7 @@ function bootstrap() {
     console.log('--------------------------------------------');
 
     loadMiddleware();
+    loadExpressOptions();
     loadPassportStrategies();
     loadRestEndpoints();
     connectMongodb();
@@ -42,6 +43,15 @@ function bootstrap() {
     server.listen(config.port, function () {        
         console.log('[Wazibo Server] Server available at %s', waziboHost);        
     });
+}
+
+/**
+ * @description
+ * Certain express parameters should be tuned for performance and security
+ * considerations.
+ */ 
+function loadExpressOptions() {
+    app.disable('x-powered-by');
 }
 
 /**
