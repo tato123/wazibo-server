@@ -4,14 +4,14 @@
   "description": "Wazibo backend api",
   "main": "index.js",
   "scripts": {
-    "lint": "./node_modules/.bin/jshint --exclude-path=.gitignore . || true",
+    "lint": "jshint --exclude-path=.gitignore . || true",
     "test": "npm run lint",
     "start": "npm run apidoc && node ${SCRIPT:-index.js}",
-    "db": "mongod --dbpath .mongodb",
+    "db": "rm -fr .mongodb && mkdir .mongodb && mongod --dbpath .mongodb",
     "docker-build": "docker build -t us.gcr.io/wazibo-1143/wazibo-server .",
     "docker-deploy": "gcloud docker push us.gcr.io/wazibo-1143/wazibo-server",
     "gcloud-deploy": "npm run docker-build && npm run docker-deploy",
-    "apidoc" : "./node_modules/apidoc/bin/apidoc -i routes/ -o public/api/"
+    "apidoc" : "apidoc -i routes/ -o public/api/"
   },
   "repository": {
     "type": "git",
@@ -25,7 +25,7 @@
       "email": "fontanezj1@gmail.com"
     }
   ],
-  "license": "ISC",
+  "license": "Wazibo",
   "dependencies": {
     "body-parser": "^1.13.1",
     "compression": "^1.5.0",
@@ -44,9 +44,5 @@
   "engines": {
     "node": "0.10.x",
     "npm": ">1.4.0"
-  },
-  "devDependencies": {
-    "apidoc": "^0.13.1",
-    "jshint": "^2.9.1-rc1"
-  }
+  }  
 }

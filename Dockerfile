@@ -2,11 +2,15 @@ FROM node:0.10.40
 
 MAINTAINER Jonathan Fontanez<jonathan.fontanez@vce.com>
 
-# Bundle application source
-COPY . /wazibo-server/src
-# Install dependencies
-RUN cd /wazibo-server/src; npm install; npm run apidoc
+# Commands will run in this directory
+WORKDIR /wazibo-server/src
+
+# Add all our code inside that directory that lives in the container
+ADD . /wazibo-server/src
+ 
+RUN npm install apidoc jshint -g; npm install
+
 # Expose our port for mapping
 EXPOSE  9080
 # Run the application
-CMD ["node", "/wazibo-server/src/index.js"]
+CMD ["npm", "run", "start"]

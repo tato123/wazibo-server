@@ -3,7 +3,6 @@
 var express = require('express'),
     router = express.Router(),
     SaleEvent = require('../../model/SaleEvent'),
-    isAuthenticated = require('../../middleware/isAuthenticated'),
     _ = require('lodash');
 
 router.route('/')
@@ -14,7 +13,7 @@ router.route('/')
     *
     * @apiSuccess {SaleMedia} Sale media object containing a record of an upload
     */
-    .post(isAuthenticated, function (req, res) {
+    .post(function (req, res) {
         var sale = new SaleEvent(req.body);
         sale.save(function (err) {
             if (err) {
@@ -31,7 +30,7 @@ router.route('/')
     *
     * @apiSuccess {SaleMedia} Sale media object containing a record of an upload
     */
-    .get(isAuthenticated, function (req, res) {
+    .get(function (req, res) {
         SaleEvent.find({}, function (err, events) {
             if (err) {
                 res.status(400).send({ error: err });
@@ -50,7 +49,7 @@ router.route('/:id')
     *
     * @apiSuccess {SaleMedia} Sale media object containing a record of an upload
     */
-    .post(isAuthenticated, function (req, res) {
+    .post(function (req, res) {
         SaleEvent.findById(req.param.id, function (err, saleEvent) {
             if (err) {
                 res.status(400).send({ error: err });
@@ -73,7 +72,7 @@ router.route('/:id')
     *
     * @apiSuccess {SaleMedia} Sale media object containing a record of an upload
     */
-    .get(isAuthenticated, function (req, res) {
+    .get(function (req, res) {
         SaleEvent.findById(req.param.id, function (err, saleEvent) {
             if (err) {
                 res.status(400).send({ error: err });

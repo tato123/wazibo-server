@@ -8,9 +8,9 @@ var express = require('express'),
     passport = require('passport'),
     session = require('express-session'),
     x_no_compress = require('./middleware/x-no-compress'),
-    config = require('./config').config,
-    util = require('util'),
-    waziboHost = process.env.WAZIBO_URL || util.format('http://local.wazibo.com:%s', config.port);
+    serverConfig = require('./config/server'),
+    mongoConfig = require('./config/mongo'),
+    util = require('util');
 
 // express middleware
 var bodyParser = require('body-parser');
@@ -34,14 +34,13 @@ function bootstrap() {
 
     loadMiddleware();
     loadExpressOptions();
-    loadPassportStrategies();
     loadRestEndpoints();
     connectMongodb();
     
 
     console.log('[Wazibo Server] Bootstrapping environment...');
-    server.listen(config.port, function () {        
-        console.log('[Wazibo Server] Server available at %s', waziboHost);        
+    server.listen(serverConfig.port, function () {        
+        console.log('[Wazibo Server] Server available at %s', serverConfig.port);        
     });
 }
 
@@ -60,35 +59,12 @@ function loadExpressOptions() {
  * Handles connecting to our mongodb source 
  */
 function connectMongodb() {
-    var host = process.env.MONGO_PORT_27017_TCP_ADDR || 'localhost';
-    var port = process.env.MONGO_PORT_27017_TCP_PORT || '27017';
+    var host =  mongoConfig.host;
+    var port = mongoConfig.port;
     var url = util.format('mongodb://%s:%s/mydatabase', host, port);
     console.log('[Connect mongodb] connecting to url %s', url);
     mongoose.connect(url);
 };
-
-/**
- * @name loadPassportStrategies
- * @description
- * Load each of our passport strategies that we would like to include
- * or support as part of this service. In addition we are handling
- * serialization / deserialziation of user object here since our strategies
- * should all conform to this dataset.
- */
-function loadPassportStrategies() {
-    
-    require('./authenticate/facebook')(config, waziboHost);
-
-    passport.serializeUser(function (user, done) {
-        done(null, user._id);
-    });
-
-    passport.deserializeUser(function (id, done) {
-        User.findById(id, function (err, user) {
-            done(err, user);
-        });
-    });
-}
 
 /**
  * @name loadMiddlware
@@ -106,9 +82,7 @@ function loadMiddleware() {
         secret: 'test session',
         resave: false,
         saveUninitialized: true
-    }));
-    app.use(passport.initialize());
-    app.use(passport.session());
+    }));    
     app.use(express.static(__dirname +'/public/api'));
 }
 

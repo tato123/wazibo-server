@@ -1,28 +1,5 @@
-'use strict';
-
-var passport = require('passport'),
-  FacebookStrategy = require('passport-facebook').Strategy,
-  User = require('../model/User'),
-  _ = require('lodash');
-
-
-module.exports = function (config, waziboUrl) {
-  console.log('[Facebook Authenticate] Adding facebook passport strategy');
-
-  var facebook_config = config.authentication.facebook;
-  var callbackUrl = waziboUrl + facebook_config.callbackUrl;
-  console.log('[Facebook Authenticate] Callback url: %s', callbackUrl);
-
-  passport.use(new FacebookStrategy(
-    {
-      clientID: facebook_config.id,
-      clientSecret: facebook_config.secret,
-      callbackURL: callbackUrl,
-      enableProof: facebook_config.enableProof
-    },
-    function (accessToken, refreshToken, profile, done) {
-    
-      // asynchronous
+  /*
+  // asynchronous
       process.nextTick(function () {
         // find the user in the database based on their facebook id
         User.findOne({ 'id': profile.id }, function (err, user) {
@@ -61,6 +38,5 @@ module.exports = function (config, waziboUrl) {
           }
         });
       });
-
-    }));
-}
+      
+      */
