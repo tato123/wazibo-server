@@ -19,9 +19,9 @@ router.route('/')
        var sale = new SaleItem(req.body);
        sale.save(function (err) {
             if (err) {
-                res.status(400).send({ error: err });
+                res.status(400).json([]);
             }
-            res.status(200).send({ results: sale });
+            res.status(200).json(sale);
         });
     })
     
@@ -35,9 +35,9 @@ router.route('/')
     .get(function (req, res) {
         SaleItem.find({}, function (err, saleItems) {
             if (err) {
-                res.status(400).send({ error: err });
+                res.status(400).json([]);
             }
-            res.status(200).send({ results: saleItems });
+            res.json(saleItems);
         });
     });
     
@@ -52,12 +52,12 @@ router.route('/:id')
     .post(function(req, res) {
         SaleItem.findById(req.param.id, function (err, saleItem) {
             if (err) {
-                res.status(400).send({ error: err });
+                res.status(400).send([]);
             }
             _.extend(saleItem, req.body);
             saleItem.save(function (err) {
                 if (err) {
-                    res.status(400).send({ error: err });
+                    res.status(400).send([]);
                 }
                 res.status(200).send({ results: saleItem });
             });
@@ -73,9 +73,9 @@ router.route('/:id')
     .get(function(req, res) {
         SaleItem.findById(req.param.id, function (err, saleItem) {
             if (err) {
-                res.status(400).send({ error: err });
+                res.status(400).send([]);
             }
-            res.status(200).send({ results: saleItem });
+            res.status(200).json(saleItem);
         });
     });
 

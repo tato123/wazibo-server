@@ -58,12 +58,9 @@ function loadExpressOptions() {
  * @description
  * Handles connecting to our mongodb source 
  */
-function connectMongodb() {
-    var host =  mongoConfig.host;
-    var port = mongoConfig.port;
-    var url = util.format('mongodb://%s:%s/mydatabase', host, port);
-    console.log('[Connect mongodb] connecting to url %s', url);
-    mongoose.connect(url);
+function connectMongodb() {    
+    console.log('[Connect mongodb] connecting to url %s', mongoConfig.url());
+    mongoose.connect(mongoConfig.url());
 };
 
 /**
