@@ -3,9 +3,12 @@
 var express = require('express'),
     router = express.Router(),
     SaleEvent = require('../../model/SaleEvent'),
-    _ = require('lodash');
+    _ = require('lodash'),
+    logger = require('../../logger'),
+    oauthToken = require('../../middleware/oauthToken');
 
 router.route('/')
+
     /**
     * @api {post} /sale_event New Event
     * @apiName Post a new event
@@ -13,15 +16,17 @@ router.route('/')
     *
     * @apiSuccess {SaleMedia} Sale media object containing a record of an upload
     */
-    .post(function (req, res) {
-        var sale = new SaleEvent(req.body);
+    .post(oauthToken.authenticate, function (req, res) {        
+        var sale = new SaleEvent(req.body);                        
+        sale._creator = req.user._id;        
         sale.save(function (err) {
             if (err) {
-                res.status(400).send({ error: err });
+                return res.status(400).send({ error: err });
             }
-            res.status(200).send({ results: sale });
+            logger.info('stored new event',req.body);
+            res.status(200).json( sale );
         });
-    })
+    })    
     
     /**
     * @api {get} /sale_event Get all events
@@ -35,7 +40,7 @@ router.route('/')
             if (err) {
                 res.status(400).send({ error: err });
             }
-            res.status(200).send({ results: events });
+            res.status(200).json(events);
         });
     });
 
@@ -49,8 +54,8 @@ router.route('/:id')
     *
     * @apiSuccess {SaleMedia} Sale media object containing a record of an upload
     */
-    .post(function (req, res) {
-        SaleEvent.findById(req.param.id, function (err, saleEvent) {
+    .post(oauthToken.authenticate, function (req, res) {
+        SaleEvent.findById(req.params.id, function (err, saleEvent) {
             if (err) {
                 res.status(400).send({ error: err });
             }
@@ -59,10 +64,23 @@ router.route('/:id')
                 if (err) {
                     res.status(400).send({ error: err });
                 }
-                res.status(200).send({ results: saleEvent });
+                res.status(200).json(saleEvent);
             });
         });
 
+    })
+    
+    .delete(oauthToken.authenticate, function(req, res) {
+        SaleEvent.findById(req.params.id, function (err, saleEvent) {
+            if (err) {
+                res.status(400).send({ error: err });
+            }
+            if ( !saleEvent ) {
+                return res.status(404).send();
+            }
+            saleEvent.remove();
+            res.status(201).send();
+        });
     })
     
     /**
@@ -73,11 +91,13 @@ router.route('/:id')
     * @apiSuccess {SaleMedia} Sale media object containing a record of an upload
     */
     .get(function (req, res) {
-        SaleEvent.findById(req.param.id, function (err, saleEvent) {
+        var id = req.params.id;
+        logger.info('Looking for sale event with id', id);
+        SaleEvent.findById(id, function (err, saleEvent) {
             if (err) {
-                res.status(400).send({ error: err });
+                res.status(400).send();
             }
-            res.status(200).send({ results: saleEvent });
+            res.status(200).json(saleEvent);
         });
     });
 

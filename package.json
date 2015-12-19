@@ -11,7 +11,7 @@
     "docker-build": "docker build -t us.gcr.io/wazibo-1143/wazibo-server .",
     "docker-deploy": "gcloud docker push us.gcr.io/wazibo-1143/wazibo-server",
     "gcloud-deploy": "npm run docker-build && npm run docker-deploy",
-    "apidoc" : "apidoc -i routes/ -o public/api/"
+    "apidoc": "apidoc -i routes/ -o public/api/"
   },
   "repository": {
     "type": "git",
@@ -34,15 +34,20 @@
     "express-session": "^1.12.1",
     "gcloud": "^0.25.1",
     "googleapis": "^2.1.6",
+    "kerberos": "0.0.17",
     "lodash": "^3.10.1",
+    "moment": "^2.10.6",
+    "mongodb": "^2.0.52",
     "mongoose": "^4.2.8",
+    "mongoose-timestamp": "^0.4.0",
     "multer": "^1.1.0",
     "passport": "^0.3.2",
     "passport-facebook": "^2.0.0",
-    "q": "^1.4.1"
+    "q": "^1.4.1",
+    "winston": "^2.1.1"
   },
   "engines": {
     "node": "0.12.x",
     "npm": ">2.11.3"
-  }  
+  }
 }

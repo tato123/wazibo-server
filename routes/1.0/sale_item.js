@@ -3,7 +3,8 @@
 var express = require('express'),
     router = express.Router(),
     SaleItem = require('../../model/SaleItem'),
-    _ = require('lodash');
+    _ = require('lodash'), 
+    oauthToken = require('../../middleware/oauthToken');
  
 
 router.route('/')
@@ -15,8 +16,9 @@ router.route('/')
     *
     * @apiSuccess {SaleItem} Sale media object containing a record of an upload
     */
-    .post(function (req, res) {
+    .post(oauthToken.authenticate, function (req, res) {
        var sale = new SaleItem(req.body);
+       sale._creator = req.user._id;
        sale.save(function (err) {
             if (err) {
                 res.status(400).json([]);
@@ -49,7 +51,7 @@ router.route('/:id')
     *
     * @apiSuccess {SaleItem} Sale media object containing a record of an upload
     */
-    .post(function(req, res) {
+    .post(oauthToken.authenticate, function(req, res) {
         SaleItem.findById(req.param.id, function (err, saleItem) {
             if (err) {
                 res.status(400).send([]);

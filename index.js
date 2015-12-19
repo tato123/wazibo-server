@@ -6,90 +6,40 @@ var express = require('express'),
     server = require('http').Server(app),
     compression = require('compression'),
     passport = require('passport'),
-    session = require('express-session'),
+    passportConfig = require('./config/passport')(passport),
     x_no_compress = require('./middleware/x-no-compress'),
     serverConfig = require('./config/server'),
     mongoConfig = require('./config/mongo'),
-    util = require('util');
-
-// express middleware
-var bodyParser = require('body-parser');
-
-// database client
-var mongoose = require('mongoose'),
+    util = require('util'),
+    bodyParser = require('body-parser'),
+    mongoose = require('mongoose'),
+    logger = require('./logger'),
     User = require('./model/User');
 
-/**
- * @name bootstrap
- * @description
- * Bootstrapping function, responsible for starting up the server
- * and loading each of the required pieces. Split into functions
- * to better articulate what each step should do and isolate steps
- */
-function bootstrap() {
-    console.log('--------------------------------------------');
-    console.log('[Wazibo Server] Starting with environment...');
-    console.log(process.env);
-    console.log('--------------------------------------------');
 
-    loadMiddleware();
-    loadExpressOptions();
-    loadRestEndpoints();
-    connectMongodb();
+logger.info('--------------------------------------------');
+logger.info('[Wazibo Server] Starting with environment...');
+logger.info(process.env);
+logger.info('--------------------------------------------');
+
+// setup our middleware
+app.use(bodyParser.json());
+app.use(passport.initialize());
+app.use(compression({ filter: x_no_compress }));
+app.use(express.static(__dirname +'/public/api'));
+
+// configure our express instance
+app.disable('x-powered-by');
+
+// load our routes
+require('express-load-routes')(app, './routes');
+
+// connect to mongodb
+logger.info('[Connect mongodb] connecting to url %s', mongoConfig.url());
+mongoose.connect(mongoConfig.url());
     
-
-    console.log('[Wazibo Server] Bootstrapping environment...');
-    server.listen(serverConfig.port, function () {        
-        console.log('[Wazibo Server] Server available at %s', serverConfig.port);        
-    });
-}
-
-/**
- * @description
- * Certain express parameters should be tuned for performance and security
- * considerations.
- */ 
-function loadExpressOptions() {
-    app.disable('x-powered-by');
-}
-
-/**
- * @name connectMongodb
- * @description
- * Handles connecting to our mongodb source 
- */
-function connectMongodb() {    
-    console.log('[Connect mongodb] connecting to url %s', mongoConfig.url());
-    mongoose.connect(mongoConfig.url());
-};
-
-/**
- * @name loadMiddlware
- * @description
- * Load all of our specified middlware that is required
- * for this application. This doesn't preclude dynamically adding 
- * more middleware, just the initial set of middleware required to
- * get running.
- */
-function loadMiddleware() {
-    app.use(bodyParser.json());
-    app.use(compression({ filter: x_no_compress }));
-
-    app.use(session({
-        secret: 'test session',
-        resave: false,
-        saveUninitialized: true
-    }));    
-    app.use(express.static(__dirname +'/public/api'));
-}
-
-function loadRestEndpoints() {
-    // load the dynamic routes from the routes folder
-    // require the module and pass the  
-    // express instance 
-    require('express-load-routes')(app, './routes');
-}
-
-if (!module.parent) {
-    bootstrap();
-}
+// startup our server
+logger.info('[Wazibo Server] Bootstrapping environment...');
+server.listen(serverConfig.port, function () {        
+    logger.info('[Wazibo Server] Server available at %s', serverConfig.port);        
+});
