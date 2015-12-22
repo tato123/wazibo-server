@@ -1,0 +1,14 @@
+/**
+ * @apiDefine Oauth2
+ * @apiHeader {String} Authorization OAuth2 bearer token
+ * @apiHeader {String} X-Authorization-Provider Authorization provider used to validate bearer token
+ * @apiErrorExample Not Authenticated-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "UserNotFound"
+ *     }
+ */
+ 
+/**
+ * @apiDefine version 1.0.0
+ */

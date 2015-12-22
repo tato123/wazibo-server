@@ -8,6 +8,8 @@ var express = require('express'),
     multer = require('multer'),
     images = require('../../middleware/images')(storageConfig.gcloud, storageConfig.gcloud.cloudStorageBucket),
     logger = require('../../logger'),
+    util = require('util'),
+    serverConfig = require('../../config/server'),
     oauthToken = require('../../middleware/oauthToken');
 
 // bootstrap with some information 
@@ -20,6 +22,10 @@ logger.info('[Media REST api] gcloud storage bucket: %s', storageConfig.gcloud.c
 * @api {post} /media/upload Upload Image
 * @apiName Upload Image
 * @apiGroup Media
+* @apiVersion 1.0.0
+*
+* @apiUse Oauth2
+* @apiSuccess {SaleMedia} Gets the bucket url where applications can send requests to for uploading
 */
 router.post('/upload',oauthToken.authenticate, images.multer.single('image'), images.sendUploadToGCS,
     function (req, res) {
@@ -42,9 +48,10 @@ router.post('/upload',oauthToken.authenticate, images.multer.single('image'), im
     });
     
 /**
-* @api {get} /media/:id Get Image
-* @apiName View media record
+* @api {get} /media Get all images
+* @apiName Get all media
 * @apiGroup Media
+* @apiVersion 1.0.0
 *
 * @apiSuccess {SaleMedia} Sale media object containing a record of an upload
 */
@@ -57,14 +64,23 @@ router.get('/',function (req, res) {
     });
 });
 
+/**
+* @api {get} /media/bucket Get bucket
+* @apiName Get media bucket
+* @apiGroup Media
+* @apiVersion 1.0.0
+*
+* @apiSuccess {String} Gets the bucket url where applications can send requests to for uploading
+*/
 router.get('/bucket', function(req,res) {
-     
+     res.status(200).send(util.format('%s/%s', serverConfig.url(), 'media/upload'));
 });
 
 /**
 * @api {get} /media/:id Get image record
-* @apiName View media record
+* @apiName Get media for id
 * @apiGroup Media
+* @apiVersion 1.0.0
 *
 * @apiSuccess {SaleMedia} Sale media object containing a record of an upload
 */

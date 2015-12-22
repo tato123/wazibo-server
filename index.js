@@ -14,13 +14,28 @@ var express = require('express'),
     bodyParser = require('body-parser'),
     mongoose = require('mongoose'),
     logger = require('./logger'),
-    User = require('./model/User');
+    User = require('./model/User'),
+    _ = require('lodash');
 
 
+// bootstrap the actual server
 logger.info('--------------------------------------------');
-logger.info('[Wazibo Server] Starting with environment...');
-logger.info(process.env);
+logger.info('Starting with environment...');
+_.forEach(_.keys(process.env).sort(), function(key) {
+    console.log('\t%s: %s', key, process.env[key]);
+});
 logger.info('--------------------------------------------');
+
+if ( !mongoConfig.validate() ) {
+    logger.error('Mongo configuration is invalid, exiting');
+    process.exit(1);
+}
+if (!serverConfig.validate() ) {
+    logger.error('Server configuration is invalid, exiting');
+    process.exit(1);
+}
+
+
 
 // setup our middleware
 app.use(bodyParser.json());

@@ -32,8 +32,7 @@ var User = new Schema({
         email        : String,
         name         : String,
         provider     : { type: String, default: 'google' }
-    },
-    events: [{ type: Schema.ObjectId, ref: 'SaleEvent' }],
+    }
 });
 
 module.exports = mongoose.model('User', User);

@@ -8,9 +8,10 @@ var express = require('express'),
 module.exports = {
 
     authenticate: function (req, res, next) {
-        // use the facebook token strategy, verify the information and then
-        // get the
-        logger.info('Oauth headers', req.headers);
+        // log our headers as part of authenticated the user request
+        logger.debug('Authenticating user with headers', req.headers);
+        
+        
         if (req.headers['X-Authorization-Provider'] === 'facebook' || 
             req.headers['X-Authorization-Provider'.toLowerCase()] === 'facebook' ) {
             passport.authenticate('facebook-token', function (err, user, info) {
@@ -33,13 +34,19 @@ module.exports = {
                         logger.info('No user present, adding user to request', req.user);    
                     }
                     
-                    next();
+                    return next();
                 });
                 
             })(req, res, next);
-        } else {
-            next(new Error('Unspecified provider'));    
+        } 
+        else {
+            // if we get to thise point we've fallen out of authentication pathways either from an invalid
+            // provider or authentication issue, either way we aren't authenticated    
+            res.status(401).send();
         }
+        
+            
+        
         
         
     }

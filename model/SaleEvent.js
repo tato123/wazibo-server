@@ -10,7 +10,8 @@ var SaleEvent = new Schema({
 	_creator	: { type: Schema.ObjectId, ref: 'User' },
 	contributors: [{ type: Schema.ObjectId, ref: 'User' }],
 	items		: Array,
-	photos		: Array
+	photos		: Array,
+	attic		: Boolean
 });
 
 SaleEvent.plugin(timestamps);
