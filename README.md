@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/tato123/wazibo-server.svg?token=Tw9e4hEUiGWYxz1zniU6&branch=master)](https://travis-ci.com/tato123/wazibo-server)
+
 # Overview
 
 The Wazibo server project handles storage, data manipulation, and basic user management services (i.e. user authentication).
