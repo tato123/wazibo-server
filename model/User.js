@@ -1,12 +1,12 @@
 'use strict';
 
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+var mongoose = require('mongoose'),
+    Schema = mongoose.Schema,
+    passportLocalMongoose = require('passport-local-mongoose');
 
 var User = new Schema({
-	local            : {
-        email        : String,
-        password     : String,
+	local            : {        
+        accessToken  : String,
         provider     : { type: String, default: 'local' }
     },
     facebook         : {
@@ -33,6 +33,14 @@ var User = new Schema({
         name         : String,
         provider     : { type: String, default: 'google' }
     }
+});
+
+User.plugin(passportLocalMongoose, {
+    usernameField: 'local.email',
+    saltField: 'local.salt',
+    hashField: 'local.hash',
+    attemptsField: 'local.attempts',
+    lastLoginField: 'local.last',
 });
 
 module.exports = mongoose.model('User', User);

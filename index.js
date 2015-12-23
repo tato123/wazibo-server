@@ -15,7 +15,8 @@ var express = require('express'),
     mongoose = require('mongoose'),
     logger = require('./logger'),
     User = require('./model/User'),
-    _ = require('lodash');
+    _ = require('lodash'),
+    helmet = require('helmet');
 
 
 // bootstrap the actual server
@@ -39,12 +40,16 @@ if (!serverConfig.validate() ) {
 
 // setup our middleware
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+// takes care of all our standard security headers
+app.use(helmet()); 
 app.use(passport.initialize());
 app.use(compression({ filter: x_no_compress }));
 app.use(express.static(__dirname +'/public/api'));
 
 // configure our express instance
 app.disable('x-powered-by');
+app.set('etag', false);
 
 // load our routes
 require('express-load-routes')(app, './routes');

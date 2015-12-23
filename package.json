@@ -6,12 +6,10 @@
   "scripts": {
     "lint": "jshint --exclude-path=.gitignore . || true",
     "test": "npm run lint",
-    "start": "npm run apidoc && nodemon ${SCRIPT:-index.js}",
-    "db": "rm -fr .mongodb && mkdir .mongodb && mongod --dbpath .mongodb",
+    "start": "gulp",
     "docker-build": "docker build -t us.gcr.io/wazibo-1143/wazibo-server .",
     "docker-deploy": "gcloud docker push us.gcr.io/wazibo-1143/wazibo-server",
-    "gcloud-deploy": "npm run docker-build && npm run docker-deploy",
-    "apidoc": "apidoc -f \".*\\.js$\" -f \".*\\.api$\" -i routes/ -o public/api/"
+    "gcloud-deploy": "npm run docker-build && npm run docker-deploy"
   },
   "repository": {
     "type": "git",
@@ -31,9 +29,11 @@
     "compression": "^1.5.0",
     "express": "^4.13.3",
     "express-load-routes": "^1.0.1",
+    "express-rate-limit": "^2.0.2",
     "express-session": "^1.12.1",
     "gcloud": "^0.25.1",
     "googleapis": "^2.1.6",
+    "helmet": "^1.0.1",
     "kerberos": "0.0.17",
     "lodash": "^3.10.1",
     "moment": "^2.10.6",
@@ -44,11 +44,18 @@
     "passport": "^0.3.2",
     "passport-facebook": "^2.0.0",
     "passport-facebook-token": "tato123/passport-facebook-token",
+    "passport-local-mongoose": "^3.1.0",
     "q": "^1.4.1",
     "winston": "^2.1.1"
   },
   "engines": {
     "node": "0.12.x",
     "npm": ">2.11.3"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-apidoc": "^0.2.2",
+    "gulp-live-server": "0.0.29",
+    "gulp-nodemon": "^2.0.4"
   }
 }

@@ -2,13 +2,50 @@
  * @apiDefine Oauth2
  * @apiHeader {String} Authorization OAuth2 bearer token
  * @apiHeader {String} X-Authorization-Provider Authorization provider used to validate bearer token
+ * @apiError (401) Unauthorized The request was not properly authenticated, missing token or provider
  * @apiErrorExample Not Authenticated-Response:
- *     HTTP/1.1 404 Not Found
- *     {
- *       "error": "UserNotFound"
- *     }
+ *     HTTP/1.1 401 Unauthorized     
  */
  
 /**
  * @apiDefine version 1.0.0
  */
+ 
+/**
+* @apiDefine userResponse 
+* @apiSuccess (200) {User} user A user account
+* @apiSuccessExample {json} Success-Response:
+*     HTTP/1.1 200 OK
+*     {
+*       "_id": "1232132121",
+*       "strategy": {
+*			"displayName": "123"
+*			"photos" : [] 
+*		}
+*     }
+*/
+
+/**
+* @apiDefine noDataResponse 
+* @apiError (404) NoData The server processed the request but was unable to find data for the request
+* @apiErrorExample No-Data-Response:
+*     HTTP/1.1 404 Not Found
+*/
+
+/** 
+* @apiDefine badRequest
+* @apiError (400) BadRequest The request sent by the client was bad, required data was missing, or the request was invalid
+* @apiErrorExample BadRequest-Response:
+* HTTP/1.1 400 Bad Request
+*/
+
+/**
+* @apiDefine saleMediaResponse 
+* @apiSuccess (200) {SaleMedia} saleMedia A sales media record, a handle to an image
+* @apiSuccessExample {json} Success-Response:
+* HTTP/1.1 200 OK
+* {
+*    imageUrl: 'https://bucket.url/im123.png',
+*    _creator: '1232435'
+* }
+*/

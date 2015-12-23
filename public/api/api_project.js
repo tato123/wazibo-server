@@ -1,1 +1,0 @@
-define({  "name": "Wazibo",  "version": "1.0.0",  "description": "RESTful api for Wazibo",  "title": "Wazibo REST api",  "url": "https://api.wazibo.com/1.0",  "sampleUrl": false,  "apidoc": "0.2.0",  "generator": {    "name": "apidoc",    "time": "2015-12-22T02:14:38.984Z",    "url": "http://apidocjs.com",    "version": "0.14.0"  }});

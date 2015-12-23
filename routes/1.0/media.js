@@ -19,13 +19,18 @@ logger.info('[Media REST api] gcloud storage bucket: %s', storageConfig.gcloud.c
 
 
 /**
-* @api {post} /media/upload Upload Image
-* @apiName Upload Image
+* @api {POST} /media/upload Upload an image
+* @apiName PostUpload
 * @apiGroup Media
 * @apiVersion 1.0.0
-*
+* @apiPermission user
 * @apiUse Oauth2
-* @apiSuccess {SaleMedia} Gets the bucket url where applications can send requests to for uploading
+* @apiUse saleMediaResponse
+*
+* @apiDescription
+* Allows users to upload a new image that can then be used with any object type that accepts a media
+* record. This API method stores the image and provides a handle back to that image. All images
+* are automatically associated with the user account that uploaded the image.
 */
 router.post('/upload',oauthToken.authenticate, images.multer.single('image'), images.sendUploadToGCS,
     function (req, res) {
@@ -48,12 +53,17 @@ router.post('/upload',oauthToken.authenticate, images.multer.single('image'), im
     });
     
 /**
-* @api {get} /media Get all images
-* @apiName Get all media
+* @api {GET} /media Get all images
+* @apiName GetAllMedia
 * @apiGroup Media
 * @apiVersion 1.0.0
+* @apiUse noDataResponse
+* @apiUse saleMediaResponse
 *
-* @apiSuccess {SaleMedia} Sale media object containing a record of an upload
+* @apiDescription
+* <h2 style="color:red">EXPERIMENTAL</h2>
+* Gets all of the media records, this api call should be considered experimental since there may never be a need to 
+* get all of the media records without actually getting their associated parent (i.e. event or item)
 */
 router.get('/',function (req, res) {
     SaleMedia.find(function (err, results) {
@@ -65,29 +75,40 @@ router.get('/',function (req, res) {
 });
 
 /**
-* @api {get} /media/bucket Get bucket
+* @api {GET} /media/bucket Get bucket
 * @apiName Get media bucket
 * @apiGroup Media
 * @apiVersion 1.0.0
 *
-* @apiSuccess {String} Gets the bucket url where applications can send requests to for uploading
+* @apiSuccess (200) {String} Gets the bucket url where applications can send requests to for uploading
+* @apiSuccessExample {String} Success-Response:
+* HTTP/1.1 200 OK
+* http://api.wazibo.com/media/upload   
 */
 router.get('/bucket', function(req,res) {
      res.status(200).send(util.format('%s/%s', serverConfig.url(), 'media/upload'));
 });
 
 /**
-* @api {get} /media/:id Get image record
+* @api {GET} /media/:id Get image record
 * @apiName Get media for id
 * @apiGroup Media
 * @apiVersion 1.0.0
+* @apiUse noDataResponse
+* @apiUse saleMediaResponse
+* @apiUse badRequest
 *
-* @apiSuccess {SaleMedia} Sale media object containing a record of an upload
+* @apiDescription 
+* Get a particular media record associated to an id 
 */
 router.get('/:mediaId', function (req, res) {
+    if ( !req.param.id ) {
+        res.status(400).send();
+    }
+    
     SaleMedia.findById(req.param.id, function (err, saleMedia) {
         if (err) {
-            res.status(400).send({ error: err });
+            res.status(404).send();
         }
         res.status(200).json(saleMedia);
     });

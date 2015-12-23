@@ -11,7 +11,7 @@ var express = require('express'),
 /**
 * @api {POST} /sale/event New Event
 * @apiName Post a new event
-* @apiGroup Sale Event
+* @apiGroup Sale
 * @apiUse Oauth2
 * @apiVersion 1.0.0
 * @apiSuccess {SaleMedia} Sale media object containing a record of an upload
@@ -31,7 +31,7 @@ router.post('/event', oauthToken.authenticate, function (req, res) {
 /**
 * @api {GET} /sale/event Get all events
 * @apiName Get all events
-* @apiGroup Sale Event
+* @apiGroup Sale
 * @apiVersion 1.0.0
 *
 * @apiSuccess {SaleMedia} Sale media object containing a record of an upload
@@ -50,7 +50,7 @@ router.get('/event', function (req, res) {
 /**
 * @api {POST} /sale/event/:id Update event
 * @apiName Update an event
-* @apiGroup Sale Event
+* @apiGroup Sale
 * @apiUse Oauth2
 * @apiVersion 1.0.0
 * @apiSuccess {SaleMedia} Sale media object containing a record of an upload
@@ -74,7 +74,7 @@ router.post('/event/:id', oauthToken.authenticate, function (req, res) {
 /**
 * @api {DELETE} /sale/event/:id Delete event
 * @apiName Delete an event
-* @apiGroup Sale Event
+* @apiGroup Sale
 * @apiUse Oauth2
 * @apiVersion 1.0.0
 */
@@ -94,7 +94,7 @@ router.delete('/event/:id', oauthToken.authenticate, function (req, res) {
 /**
 * @api {GET} /sale/event/:id Get event by id
 * @apiName Get event by id
-* @apiGroup Sale Event
+* @apiGroup Sale
 * @apiVersion 1.0.0
 *
 * @apiSuccess {SaleMedia} Sale media object containing a record of an upload
@@ -114,7 +114,7 @@ router.get('/event/:id', function (req, res) {
 /**
 * @api {POST} /sale/item/:id Post new item
 * @apiName Post new item
-* @apiGroup Sale Item
+* @apiGroup Sale
 * @apiUse Oauth2
 * @apiVersion 1.0.0
 *
@@ -185,7 +185,7 @@ router.post('/item', oauthToken.authenticate, function (req, res) {
 /**
 * @api {GET} /sale/item Get all items
 * @apiName Get all items
-* @apiGroup Sale Item
+* @apiGroup Sale
 * @apiVersion 1.0.0
 *
 * @apiSuccess {SaleItem} Sale media object containing a record of an upload
@@ -202,7 +202,7 @@ router.get('/item', function (req, res) {
 /**
 * @api {POST} /sale/item/:id Update sale item
 * @apiName Update item by id
-* @apiGroup Sale Item
+* @apiGroup Sale
 * @apiUse Oauth2
 * @apiVersion 1.0.0
 *
@@ -225,7 +225,7 @@ router.post('/item/:id', oauthToken.authenticate, function (req, res) {
 /**
 * @api {GET} /sale/item/:id Get item by id
 * @apiName Get item by id
-* @apiGroup Sale Item
+* @apiGroup Sale
 * @apiVersion 1.0.0
 *
 * @apiSuccess {SaleItem} Sale media object containing a record of an upload
