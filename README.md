@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/tato123/wazibo-server.svg?token=Tw9e4hEUiGWYxz1zniU6&branch=master)](https://travis-ci.com/tato123/wazibo-server)
+[![Build Status](https://api.shippable.com/projects/5679aa2a1895ca447466cb46/badge/master)](https://app.shippable.com/projects/5679aa2a1895ca447466cb46)
 
 # Overview
 
