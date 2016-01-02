@@ -9,7 +9,10 @@ var express = require('express'),
   oauthToken = require('../../middleware/oauthToken'),
   qr = require('qr-image'),
   serverConfig = require('../../config/server'),
-  util = require('util');
+  util = require('util'),
+  apiRequestLogger = require('../../middleware/apiRequestLogger');
+
+router.use(apiRequestLogger);
 
 /**
 * @api {POST} /sale/event New Event
@@ -106,7 +109,7 @@ router.delete('/event/:id', oauthToken.authenticate, function (req, res) {
 */
 router.get('/event/:id', function (req, res) {
   var id = req.params.id;
-  logger.debug('Looking for sale event with id', id);
+
   SaleEvent.findById(id, function (err, saleEvent) {
     if (err) {
       res.status(400).send();
@@ -142,7 +145,6 @@ router.get('/event/:id/qr', function (req, res) {
 * @apiSuccess {SaleItem} Sale media object containing a record of an upload
 */
 router.post('/item', oauthToken.authenticate, function (req, res) {
-  logger.info('POST item called', req.body);
 
   var saleItem = new SaleItem(req.body);
   saleItem._creator = req.user._id;
@@ -164,7 +166,7 @@ router.post('/item', oauthToken.authenticate, function (req, res) {
 * @apiSuccess {SaleItem} Sale media object containing a record of an upload
 */
 router.get('/item', function (req, res) {
-  logger.info('GET item called');
+
   var searchTerms = [];
   if (req.query.user_id) {
     logger.info('Seraching for item with creators', req.query.user_id);
@@ -192,20 +194,21 @@ router.get('/item', function (req, res) {
 * @apiSuccess {SaleItem} Sale media object containing a record of an upload
 */
 router.post('/item/:id', oauthToken.authenticate, function (req, res) {
-  logger.info('POST by id item called');
 
-  SaleItem.findById(req.params.id, function (err, saleItem) {
-    if (err) {
-      res.status(400).send([]);
-    }
-    _.extend(saleItem, req.body);
-    saleItem.save(function (err) {
+  SaleItem.findById(req.params.id)
+    .where('_creator', req.user._id)
+    .exec(function (err, saleItem) {
       if (err) {
         res.status(400).send([]);
       }
-      res.status(200).send({ results: saleItem });
+      _.extend(saleItem, req.body);
+      saleItem.save(function (err) {
+        if (err) {
+          res.status(400).send([]);
+        }
+        res.status(200).send({ results: saleItem });
+      });
     });
-  });
 });
 
 /**
@@ -217,11 +220,15 @@ router.post('/item/:id', oauthToken.authenticate, function (req, res) {
 * @apiSuccess {SaleItem} Sale media object containing a record of an upload
 */
 router.get('/item/:id', function (req, res) {
-  logger.info('GET item by id item called');
 
-  SaleItem
-    .findById(req.params.id)
-    .populate('photos')
+  var query = SaleItem
+    .findById(req.params.id);
+    
+  if ( req.query.user_id ) {
+    query.where('_creator', req.query.user_id);
+  }
+
+  query.populate('photos')
     .exec(function (err, saleItem) {
       if (err) {
         res.status(400).send([]);
@@ -240,7 +247,7 @@ router.get('/item/:id', function (req, res) {
 * @apiSuccess {SaleItem} Sale media object containing a record of an upload
 */
 router.delete('/item/:id', oauthToken.authenticate, function (req, res) {
-  logger.info('Delete item by id');
+
   SaleItem
     .findById(req.params.id)
     .where('_creator', req.user._id)
@@ -265,7 +272,6 @@ router.delete('/item/:id', oauthToken.authenticate, function (req, res) {
 * @apiSuccess {SaleItem} Sale media object containing a record of an upload
 */
 router.get('/item/:id/qr', function (req, res) {
-  logger.info('GET item by id item called');
 
   SaleItem.findById(req.params.id, function (err, saleItem) {
     if (err) {

@@ -6,7 +6,10 @@ var express = require('express'),
     authenticate = User.authenticate(),
     oauthToken = require('../../middleware/oauthToken'),
     limiter = require('../../middleware/limiter'),
-    logger = require('../../logger');    
+    logger = require('../../logger'), 
+    apiRequestLogger = require('../../middleware/apiRequestLogger')    
+
+router.use(apiRequestLogger);
 
 /**
 * @api {GET} /account Get account

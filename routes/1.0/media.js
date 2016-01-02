@@ -10,13 +10,16 @@ var express = require('express'),
   logger = require('../../logger'),
   util = require('util'),
   serverConfig = require('../../config/server'),
-  oauthToken = require('../../middleware/oauthToken');
+  oauthToken = require('../../middleware/oauthToken'),
+  apiRequestLogger = require('../../middleware/apiRequestLogger');
 
 // bootstrap with some information 
 logger.info('[Media REST api] Using gcloud bucket storage');
 logger.info('[Media REST api] gcloud project id: %s', storageConfig.gcloud.projectId);
 logger.info('[Media REST api] gcloud storage bucket: %s', storageConfig.gcloud.cloudStorageBucket);
 
+
+router.use(apiRequestLogger);
 
 /**
 * @api {POST} /media/upload Upload an image
