@@ -1,8 +1,11 @@
 'use strict';
 
+var path = require('path');
+
 module.exports = function (projectId, cloudStorageBucket) {
 	
 	var gcloud = require('gcloud')({
+    keyFilename: path.join(__dirname, '../config/wazibo-key.json'),
 		projectId: projectId
 	});
 	var gcs = gcloud.storage();

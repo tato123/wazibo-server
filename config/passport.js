@@ -18,7 +18,7 @@ module.exports = function (passport) {
       process.nextTick(function () {
 
 
-        User.findOne({ 'facebook.id': profile.id }, function (err, user) {
+        User.findOne({ 'identities.userId': profile.id }, function (err, user) {
               
           // if there is an error, stop everything and return that
           // ie an error connecting to the database
@@ -28,22 +28,26 @@ module.exports = function (passport) {
           // if the user is found, then log them in
           if (user) {
             return done(null, user); // user found, return that user
-          } else {
-          
+          } else {            
             // if there is no user found with that facebook id, create them
             var newUser = new User({
-              facebook: {
-                id: profile.id,
-                displayName: profile.displayName,
-                name: profile.name,  
-                accessToken: accessToken,
-                refreshToken: refreshToken,         
-                photos: profile.photos,                                
-                emails: profile.emails             
-              }
+                email           : profile.emails[0].value,
+                gender          : profile.gender,
+                givenName       : profile.name.givenName,
+                familyName      : profile.name.familyName,
+                displayName     : profile.displayName,
+                photo           : profile.photos[0].value,
+                middleName      : profile.middleName,
+                identies        : []
             });
-          
- 
+            
+            newUser.identities.push({
+                provider    : profile.provider,
+                accessToken : accessToken,
+                refreshToken: refreshToken,
+                userId      : profile.id                
+            });
+              
             // save our user to the database
             newUser.save(function (err) {
               if (err) {

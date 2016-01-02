@@ -6,7 +6,7 @@ var mongoose = require('mongoose'),
 
 var SaleMedia = new Schema({
     imageUrl    : String,
-    _creator	: { type: Schema.ObjectId, ref: 'User' },
+    _creator	: { type: Schema.ObjectId, ref: 'User' }
 });
 
 SaleMedia.plugin(timestamps);

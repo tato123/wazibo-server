@@ -11,8 +11,7 @@ var logger = new (winston.Logger)({
       label: 'wazibo-server',
       timestamp: function() {
         return util.format('[%s]', moment().format('HH:mm:ss'));
-      },
-      level: 'debug'
+      }
     }),
   ]
 });

@@ -4,43 +4,32 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     passportLocalMongoose = require('passport-local-mongoose');
 
+var Identity = new Schema({
+    provider        : String,
+    accessToken    : String,
+    expiresIn      : Number,
+    userId         : String,
+    isSocial        : Boolean
+});
+
 var User = new Schema({
-	local            : {        
-        accessToken  : String,
-        provider     : { type: String, default: 'local' }
-    },
-    facebook         : {
-        id           : String,
-        displayName  : String,
-        name         : Object,
-        accessToken  : String,
-        refreshToken : String,
-        emails       : Array,                
-        photos       : Array,
-        provider     : { type: String, default: 'facebook' }         
-    },
-    twitter          : {
-        id           : String,
-        token        : String,
-        displayName  : String,
-        username     : String,
-        provider     : { type: String, default: 'twitter' }
-    },
-    google           : {
-        id           : String,
-        token        : String,
-        email        : String,
-        name         : String,
-        provider     : { type: String, default: 'google' }
-    }
+    email            : String,
+    email_verified   : {type:Boolean, default: false},
+    displayName             : String,
+    givenName       : String,
+    familyName      : String, 
+    photo          : String,   
+    gender           : String,
+    locale           : {type:String, default: 'en'},
+    identities      : [Identity]
 });
 
 User.plugin(passportLocalMongoose, {
-    usernameField: 'local.email',
-    saltField: 'local.salt',
-    hashField: 'local.hash',
-    attemptsField: 'local.attempts',
-    lastLoginField: 'local.last',
+    usernameField: 'email',
+    saltField: 'salt',
+    hashField: 'hash',
+    attemptsField: 'attempts',
+    lastLoginField: 'last',
 });
 
 module.exports = mongoose.model('User', User);

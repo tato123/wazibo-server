@@ -16,7 +16,8 @@ var express = require('express'),
     logger = require('./logger'),
     User = require('./model/User'),
     _ = require('lodash'),
-    helmet = require('helmet');
+    helmet = require('helmet'),
+    cors = require('cors');
 
 
 // bootstrap the actual server
@@ -46,6 +47,7 @@ app.use(helmet());
 app.use(passport.initialize());
 app.use(compression({ filter: x_no_compress }));
 app.use(express.static(__dirname +'/public/api'));
+app.use(cors());
 
 // configure our express instance
 app.disable('x-powered-by');

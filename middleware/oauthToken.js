@@ -11,9 +11,10 @@ module.exports = {
         // log our headers as part of authenticated the user request
         logger.debug('Authenticating user with headers', req.headers);
         
-        
-        if (req.headers['X-Authorization-Provider'] === 'facebook' || 
-            req.headers['X-Authorization-Provider'.toLowerCase()] === 'facebook' ) {
+        var FACEBOOOK = 'facebook';
+        if (req.headers['X-Authorization-Provider'] === FACEBOOOK || 
+            req.headers['X-Authorization-Provider'.toLowerCase()] === FACEBOOOK ||
+            req.query.provider === FACEBOOOK) {
             passport.authenticate('facebook-token', function (err, user, info) {
                 if (err) {
                     logger.error('Unable to authenticate OAUTH token for facebook', err);
@@ -33,7 +34,7 @@ module.exports = {
                         req.user.active = 'facebook';
                         logger.info('No user present, adding user to request', req.user);    
                     }
-                    
+                    logger.debug('Authenticated request');
                     return next();
                 });
                 
